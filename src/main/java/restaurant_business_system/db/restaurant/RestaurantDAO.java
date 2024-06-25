@@ -135,4 +135,17 @@ public class RestaurantDAO {
             return true;
         });
     }
+
+    public String getNameRestaurant(String idRestaurant) {
+        return jdbi.withHandle(handle -> {
+            try {
+                return handle.createQuery("SELECT name FROM restaurants WHERE id_restaurant = :idRestaurant")
+                        .bind("idRestaurant", idRestaurant)
+                        .mapTo(String.class)
+                        .one();
+            } catch (NoSuchElementException e) {
+                return null;
+            }
+        });
+    }
 }

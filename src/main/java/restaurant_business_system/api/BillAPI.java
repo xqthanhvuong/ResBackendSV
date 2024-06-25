@@ -24,6 +24,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import restaurant_business_system.core.NotiClient;
 import restaurant_business_system.core.User;
 import restaurant_business_system.db.bill.Bill;
 import restaurant_business_system.db.bill.BillDAO;
@@ -93,21 +94,14 @@ public class BillAPI {
      * @return a response indicating the success of the operation
      */
     @POST
-    @Path("/check-or-create")
+    @Path("/check-bill")
     public Response checkOrCreate(Bill b) {
         // Check if a bill already exists for the table
         String bill = dao.checkBill(b.getIdTable());
         if (bill != null) {
             return Response.ok(bill).build();
         }
-
-        // Create a new bill
-        Bill nb = new Bill(b.getIdTable());
-        if (dao.create(nb) != null) {
-            // boolean noti = notifyClients();
-            return Response.ok(nb.getIdBill()).build();
-        }
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        return Response.ok("No exist").build();
     }
 
     /**
@@ -131,18 +125,19 @@ public class BillAPI {
      *
      * @param o the order request containing the bill ID and food orders
      * @return a response indicating the success or failure of the order request
-     * body: {
-    "idRestaurant": "0UDUVYE7SM",
-    "idFood": "OIV0TS6836",
-    "quantity": "1",
-    "idTable": "98AFF73GPT",
-    "idBill": null || String (String if bill exists, null if new bill needs to be created)
-}
+     *         body: {
+     *         "idRestaurant": "0UDUVYE7SM",
+     *         "idFood": "OIV0TS6836",
+     *         "quantity": "1",
+     *         "idTable": "98AFF73GPT",
+     *         "idBill": null || String (String if bill exists, null if new bill
+     *         needs to be created)
+     *         }
      */
     @POST
     @Path("order")
     public Response order(OrderRequest o) {
-        if(o.getIdBill() == null || o.getIdBill().equals("")) {
+        if (o.getIdBill() == null || o.getIdBill().equals("")) {
             // create new bill
             if (o.getIdTable() == null) {
                 return Response.status(Response.Status.BAD_REQUEST).build();
@@ -160,6 +155,10 @@ public class BillAPI {
             String mode = "after";
             if (mode.equals("after")) {
                 notifyClients(o.getIdRestaurant(), "New order has been placed");
+                List<String> devices = dao.getDeviceByTokenRestaurant(o.getIdRestaurant());
+                for (String device : devices) {
+                    NotiClient.sendMessgae(device, "Bạn có đơn hàng mới nè!");
+                }
             }
             return Response.ok(rs).build();
         }
@@ -233,10 +232,6 @@ public class BillAPI {
             String desUrl = "http://localhost:8082/bills/complete-payment?idTable=" + idTable + "&code="
                     + code + "&idRes=" + idRes;
             String des = "Thanh toan hoa don";
-            // LOGGER.info("idRes", idRes);
-            // LOGGER.info("partner code", p.getPartnerCode());
-            // LOGGER.info("access", p.getAccessKey());
-            // LOGGER.info("secret", p.getSecretKey());
             String payUrl = createMethodPayment(price, p.getPartnerCode(), desUrl, des,
                     p.getAccessKey(), p.getSecretKey());
             if (payUrl != null && !payUrl.isEmpty()) {
@@ -310,12 +305,10 @@ public class BillAPI {
             boolean rs = dao.completePayment(idTable, code);
             if (rs) {
                 notifyClients(idRes, "Da thanh toan hoa don");
-                // if (rsNoti == 1) {
-                // return Response.ok("Thanh toan thanh cong!").build();
-                // } else if (rsNoti == -1) {
-                // // return Response.status(Response.Status.NOT_FOUND).build();
-                // return Response.ok("Thanh toan thanh cong!").build();
-                // }
+                List<String> devices = dao.getDeviceByTokenRestaurant(idRes);
+                for (String device : devices) {
+                    NotiClient.sendMessgae(device, "Nhà hàng của bạn vừa được cộng thêm kinh phí nè!");
+                }
                 return Response.ok("Thanh toan thanh cong! Vui long quay tro lai trang truoc.").build();
             }
             return Response.status(Response.Status.EXPECTATION_FAILED).build();
@@ -335,7 +328,8 @@ public class BillAPI {
 
     @PUT
     @Path("order-update")
-    public Response updateOrder(@Auth User u, @QueryParam("idOrder") String idOrder, @QueryParam("idRes") String idRes) {
+    public Response updateOrder(@Auth User u, @QueryParam("idOrder") String idOrder,
+            @QueryParam("idRes") String idRes) {
         boolean rs = dao.updateStateOrder(idOrder, idRes, "Done");
         if (rs) {
             return Response.ok("OK").build();
@@ -345,7 +339,8 @@ public class BillAPI {
 
     @DELETE
     @Path("order-cancel")
-    public Response deleteOrder(@Auth User u, @QueryParam("idOrder") String idOrder, @QueryParam("idRes") String idRes) {
+    public Response deleteOrder(@Auth User u, @QueryParam("idOrder") String idOrder,
+            @QueryParam("idRes") String idRes) {
         boolean rs = dao.cancelOrder(idOrder, idRes);
         if (rs) {
             return Response.ok("OK").build();

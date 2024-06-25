@@ -106,4 +106,18 @@ public class AccountAPI {
             return Response.status(Response.Status.UNAUTHORIZED).build();
         }
     }
+
+    @POST
+    @Path("update-device-token")
+    public Response updateDeviceToken(@Auth User u, Account a) {
+        if (u != null) {
+            boolean rs = dao.updateDeviceToken(u.getId(), a.getDeviceToken());
+            if (rs) {
+                return Response.ok("OK").build();
+            }
+            return Response.status(Response.Status.EXPECTATION_FAILED).build();
+        } else {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
 }

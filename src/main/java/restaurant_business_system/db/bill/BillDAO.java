@@ -557,4 +557,12 @@ public class BillDAO {
         return true;
     }
 
+    public List<String> getDeviceByTokenRestaurant(String idRes) {
+        return jdbi.withHandle(handle -> {
+            return handle.createQuery("SELECT device_token FROM accounts WHERE id_restaurant = :idRes")
+                    .bind("idRes", idRes)
+                    .mapTo(String.class)
+                    .list();
+        });
+    }
 }

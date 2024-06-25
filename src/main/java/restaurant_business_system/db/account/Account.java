@@ -18,6 +18,8 @@ public class Account {
     private String status;
 
     private String idRestaurant = null;
+    
+    private String deviceToken;
     /**
      * Constructs a new Account object.
      */
@@ -114,5 +116,17 @@ public class Account {
 
     public String getIdRestaurant() {
         return idRestaurant;
+    }
+
+    public void setIdRestaurant(String idRestaurant) {
+        this.idRestaurant = idRestaurant;
+    }
+
+    public String getDeviceToken() {
+        return deviceToken;
+    }
+
+    public void setDeviceToken(String deviceToken) {
+        this.deviceToken = deviceToken;
     }
 }

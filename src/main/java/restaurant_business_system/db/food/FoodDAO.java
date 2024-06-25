@@ -158,6 +158,11 @@ public class FoodDAO {
                 throw new ForbiddenException("You are not the owner of the menu");
             }
 
+            // Delete from order
+            handle.createUpdate("DELETE FROM orders WHERE id_food = :idFood")
+                    .bind("idFood", idFood)
+                    .execute();
+
             handle.createUpdate("DELETE FROM foods WHERE id_food = :idFood")
                     .bind("idFood", idFood)
                     .execute();

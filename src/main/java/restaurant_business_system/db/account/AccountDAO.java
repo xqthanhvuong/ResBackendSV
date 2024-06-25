@@ -145,4 +145,14 @@ public class AccountDAO {
             return true;
         });
     }
+
+    public boolean updateDeviceToken(String idAccount, String deviceToken) {
+        return jdbi.withHandle(handle -> {
+            handle.createUpdate("UPDATE accounts SET device_token = :deviceToken WHERE id_account = :idAccount")
+                    .bind("deviceToken", deviceToken)
+                    .bind("idAccount", idAccount)
+                    .execute();
+            return true;
+        });
+    }
 }

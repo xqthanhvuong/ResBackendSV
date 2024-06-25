@@ -11,7 +11,7 @@ logging:
 database:
   driverClass: com.mysql.cj.jdbc.Driver
   user: root
-  password: 123123
+  password: lexuantruong2k3@
   url: jdbc:mysql://localhost:3306/restaurant_business_system
   properties:
     charSet: UTF-8

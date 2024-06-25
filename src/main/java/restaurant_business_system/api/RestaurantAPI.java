@@ -84,4 +84,10 @@ public class RestaurantAPI {
         }
         return Response.status(Response.Status.UNAUTHORIZED).build();
     }
+
+    @GET
+    @Path("/get-name-restaurant")
+    public Response getNameRestaurant(@QueryParam("idRestaurant") String idRestaurant){
+        return Response.ok(dao.getNameRestaurant(idRestaurant)).build();
+    }
 }
