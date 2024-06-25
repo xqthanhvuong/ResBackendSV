@@ -1,0 +1,25 @@
+---
+logging:
+  level: INFO
+  loggers:
+    restaurant_business_system: DEBUG
+  appenders:
+    - type: console
+    - type: file
+      currentLogFilename: ./logs/app.log
+      archivedLogFilenamePattern: ./logs/app-%d.log.gz
+database:
+  driverClass: com.mysql.cj.jdbc.Driver
+  user: root
+  password: 123123
+  url: jdbc:mysql://localhost:3306/restaurant_business_system
+  properties:
+    charSet: UTF-8
+    hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+server:
+  applicationConnectors:
+  - type: http 
+    port: 8082
+  adminConnectors:
+  - type: http
+    port: 8083

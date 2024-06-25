@@ -1,0 +1,577 @@
+openapi: "3.0.2"
+info:
+    title: Restaurant Business System API
+    version: "1.0"
+servers:
+    - url: http://localhost:8080
+      description: Local server
+paths:
+    /healthcheck:
+        get:
+            tags:
+                - Healthcheck
+            summary: Healthcheck
+            description: Healthcheck
+            responses:
+                "200":
+                    description: OK
+    /account/register:
+        post:
+            tags:
+                - Account
+            description: Register a new account
+            requestBody:
+                content:
+                    raw:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+            responses:
+                "200":
+                    description: OK
+    /restaurant/create:
+            post:
+                tags:
+                    - Restaurant
+                description: Create a new restaurant
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    name:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /restaurant/get:
+            get:
+                tags:
+                    - Restaurant
+                description: Get all restaurants for a user
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                responses:
+                    "200":
+                        description: OK
+    /restaurant/update-name:
+            post:
+                tags:
+                    - Restaurant
+                description: Update name a restaurant
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idRestaurant:
+                                        type: string
+                                    name:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /restaurant/delete:
+            get:
+                tags:
+                    - Restaurant
+                description: Delete a restaurant
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                  - name: idRestaurant
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /menu/create:
+            post:
+                tags:
+                    - Menu
+                description: Create a new menu
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    name:
+                                        type: string
+                                    idRestaurant:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /menu/get:
+            get:
+                tags:
+                    - Menu
+                description: Get all menus from a restaurant
+                parameters:
+                    - name: idRestaurant
+                      in: query
+                      required: true
+                      schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /menu/update-name:
+            post:
+                tags:
+                    - Menu
+                description: Update name a menu
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idMenu:
+                                        type: string
+                                    name:
+                                        type: string
+                                    idRestaurant:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /menu/delete:
+            get:
+                tags:
+                    - Menu
+                description: Delete a menu
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                  - name: idMenu
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /food/create:
+            post:
+                tags:
+                    - Food
+                description: Create a new food to a menu
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idMenu:
+                                        type: string
+                                    name:
+                                        type: string
+                                    price:
+                                        type: number
+                                    image:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /food/get:
+            get:
+                tags:
+                    - Food
+                description: Get all foods from a menu
+                parameters:
+                    - name: idMenu
+                      in: query
+                      required: true
+                      schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /food/get-by-id:
+            get:
+                tags:
+                    - Food
+                description: Get a food by id
+                parameters:
+                    - name: idFood
+                      in: query
+                      required: true
+                      schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        idFood:
+                                            type: string
+                                        name:
+                                            type: string
+                                        price:
+                                            type: number
+                                        image:
+                                            type: string
+                                
+    /food/update:
+            post:
+                tags:
+                    - Food
+                description: Update a food
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idFood:
+                                        type: string
+                                    name:
+                                        type: string
+                                    price:
+                                        type: number
+                                    image:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /food/delete:
+            get:
+                tags:
+                    - Food
+                description: Delete a food
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                  - name: idFood
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /food/delete-all:
+            get:
+                tags:
+                    - Food
+                description: Delete all foods from a menu
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                  - name: idMenu
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /table/create:
+            post:
+                tags:
+                    - Table
+                description: Create a new table
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idRestaurant:
+                                        type: string
+                                    tableName:
+                                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /table/get:
+            get:
+                tags:
+                    - Table
+                description: Get all tables from a restaurant
+                security:
+                  - BasicAuth: []
+                parameters:
+                    - name: Authorization
+                      in: header
+                      required: true
+                      schema:
+                        type: string
+                      description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                    - name: idRestaurant
+                      in: query
+                      required: true
+                      schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /table/delete:
+            get:
+                tags:
+                    - Table
+                description: Delete a table
+                security:
+                    - BasicAuth: []
+                parameters:
+                  - name: Authorization
+                    in: header
+                    required: true
+                    schema:
+                        type: string
+                    description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                  - name: idTable
+                    in: query
+                    required: true
+                    schema:
+                        type: string
+                responses:
+                    "200":
+                        description: OK
+    /bills/checkOrCreate:
+            post:
+                tags:
+                    - Bill
+                description: When user scan QR code, if bill is not exist, create a new bill. If bill is exist, return bill information
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idTable:
+                                        type: string
+                responses:
+                    "200":
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        idBill:
+                                            type: string
+                        description: OK
+    /bills/get:
+            get:
+                tags:
+                    - Bill
+                description: Get all bills from a table
+                parameters:
+                    - name: idBill
+                      in: query
+                      required: true
+                      schema:
+                        type: string
+                responses:
+                    "200":
+                        content:
+                            application/json:
+                                schema:
+                                    type: array
+                                    items:
+                                        type: object
+                                        properties:
+                                            idTable:
+                                                type: string
+                                            foods:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        idFood:
+                                                            type: string
+                                                        name:
+                                                            type: string
+                                                        price:
+                                                            type: number
+                                                        quantity:
+                                                            type: number
+                                            status:
+                                                type: string
+                                            total:
+                                                type: number
+                        description: OK
+    /bills/get-all-order:
+            get:
+                tags:
+                  - "Bill"
+                description: Get all order for admin
+                parameters:
+                    - name: Authorization
+                      in: header
+                      required: true
+                      schema:
+                        type: string
+                      description: Basic Auth credentials in the format 'Basic {Base64 of username:password}'
+                    - name: idRestaurant
+                      in: query
+                      required: true
+                      schema:
+                        type: string
+                responses:
+                    "200":
+                        content:
+                            application/json:
+                                schema:
+                                    type: array
+                                    items:
+                                        type: object
+                                        properties:
+                                            idTable:
+                                                type: string
+                                            nameTable:
+                                                type: string
+                                            idBill:
+                                                type: string
+                                            foodDetails:
+                                                type: array
+                                                items:
+                                                    type: object
+                                                    properties:
+                                                        idFood:
+                                                            type: string
+                                                        name:
+                                                            type: string
+                                                        price:
+                                                            type: number
+                                                        image:
+                                                            type: string
+                                                        quantity:
+                                                            type: number
+                                            total:
+                                                type: number
+                        description: OK
+    /bills/order:
+            post:
+                tags:
+                    - Bill
+                description: Order foods to a bill
+                requestBody:
+                    content:
+                        raw:
+                            schema:
+                                type: object
+                                properties:
+                                    idBill:
+                                        type: string
+                                    foodOrders:
+                                        type: array
+                                        items:
+                                            type: object
+                                            properties:
+                                                idFood:
+                                                    type: string
+                                                quantity:
+                                                    type: number
+                responses:
+                    "200":
+                        description: OK
+                    "409":
+                        description: Conflict

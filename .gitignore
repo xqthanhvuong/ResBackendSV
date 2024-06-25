@@ -1,0 +1,6 @@
+.idea
+.vscode
+logs/
+test/
+target/
+.env
